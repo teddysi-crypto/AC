@@ -5,6 +5,8 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    // 關鍵設定：設定 GitHub Pages 子目錄路徑 (對應 Repository 名稱 /AC/)
+    base: '/AC/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
