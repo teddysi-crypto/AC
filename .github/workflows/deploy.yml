@@ -1,5 +1,4 @@
 name: Deploy Vite to GitHub Pages
-
 on:
   push:
     branches: ['main', 'master'] # 同時支援 main 與 master 分支
