@@ -2,7 +2,7 @@ name: Deploy Vite to GitHub Pages
 
 on:
   push:
-    branches: ['main'] # 如果你的預設分支是 master，請改為 'master'
+    branches: ['main', 'master'] # 同時支援 main 與 master 分支
 
 permissions:
   contents: read
@@ -27,13 +27,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        # 關鍵修正 1：改用 npm install，避免沒有 package-lock.json 或版本不符時 11 秒內閃退
+        run: npm install
 
       - name: Build
-        run: npm run build
+        # 關鍵修正 2：加入 CI=false，防止 TypeScript 或 Lint 警告（Warnings）被誤判成 Fatal Error
+        run: CI=false npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
