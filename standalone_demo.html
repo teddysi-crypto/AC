@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriChain 綠源農產供應鏈數位管理系統 - 單頁式互動原型</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', '"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11'; }
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-emerald-100 selection:text-emerald-900 font-sans min-h-screen">
+
+  <!-- Header & Top Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 gap-6">
+        
+        <!-- Brand Wordmark -->
+        <div class="flex items-center gap-3 shrink-0">
+          <div class="w-8 h-8 rounded-lg bg-emerald-700 flex items-center justify-center text-white font-bold text-base shadow-xs">
+            🌱
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-base font-bold tracking-tight text-slate-900 whitespace-nowrap">AgriChain</span>
+            <span class="text-xs text-slate-500 whitespace-nowrap hidden sm:inline">供應商數位轉型管理系統</span>
+          </div>
+        </div>
+
+        <!-- 6 Modular Navigation Links -->
+        <nav class="hidden md:flex items-center gap-1">
+          <button onclick="switchTab('portal')" id="nav-portal" class="nav-btn px-3 py-2 text-xs font-bold rounded-md text-emerald-800 bg-emerald-50">
+            多功能主頁 (Home)
+          </button>
+          <button onclick="switchTab('grading')" id="nav-grading" class="nav-btn px-3 py-2 text-xs font-medium rounded-md text-slate-600 hover:text-slate-900">
+            供應商資料查詢
+          </button>
+          <button onclick="switchTab('field')" id="nav-field" class="nav-btn px-3 py-2 text-xs font-medium rounded-md text-slate-600 hover:text-slate-900">
+            重點品項回報
+          </button>
+          <button onclick="switchTab('forms')" id="nav-forms" class="nav-btn px-3 py-2 text-xs font-medium rounded-md text-slate-600 hover:text-slate-900">
+            行政表單
+          </button>
+          <button onclick="switchTab('risk')" id="nav-risk" class="nav-btn px-3 py-2 text-xs font-medium rounded-md text-slate-600 hover:text-slate-900">
+            資料查詢 (五維度)
+          </button>
+          <button onclick="switchTab('meeting')" id="nav-meeting" class="nav-btn px-3 py-2 text-xs font-medium rounded-md text-slate-600 hover:text-slate-900">
+            會議資料
+          </button>
+          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-2 text-xs font-medium rounded-md text-slate-600 hover:text-slate-900">
+            儀表板總覽
+          </button>
+        </nav>
+
+        <!-- Current User Role -->
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-1.5 text-xs text-slate-700 bg-slate-100 px-2.5 py-1.5 rounded-lg border border-slate-200">
+            <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+            <span>產銷專員：林志明</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Mobile sub nav -->
+      <div class="md:hidden flex items-center justify-between border-t border-slate-100 py-2 overflow-x-auto text-xs gap-2">
+        <button onclick="switchTab('portal')" class="px-2 py-1 font-bold text-emerald-700 whitespace-nowrap">主頁</button>
+        <button onclick="switchTab('grading')" class="px-2 py-1 font-medium text-slate-600 whitespace-nowrap">供應商查詢</button>
+        <button onclick="switchTab('field')" class="px-2 py-1 font-medium text-slate-600 whitespace-nowrap">品項回報</button>
+        <button onclick="switchTab('forms')" class="px-2 py-1 font-medium text-slate-600 whitespace-nowrap">行政表單</button>
+        <button onclick="switchTab('risk')" class="px-2 py-1 font-medium text-slate-600 whitespace-nowrap">五維度風險</button>
+        <button onclick="switchTab('meeting')" class="px-2 py-1 font-medium text-slate-600 whitespace-nowrap">會議資料</button>
+        <button onclick="switchTab('dashboard')" class="px-2 py-1 font-medium text-slate-600 whitespace-nowrap">儀表板</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Viewport -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- 【多功能webapp介面：主選單 Portal（精準比對手繪架構圖）】 -->
+    <section id="tab-portal" class="max-w-4xl mx-auto space-y-5">
+      <!-- 標題 -->
+      <div class="text-center sm:text-left pt-1 pb-1">
+        <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 font-sans">
+          多功能webapp介面
+        </h1>
+        <p class="text-xs text-slate-500 mt-1">
+          綠源農產供應鏈數位系統 · 跨部門與現場專員單一作業入口
+        </p>
+      </div>
+
+      <!-- 第一大列：公告事項 (淺藍/薰衣草底色橫條卡片) -->
+      <div class="bg-[#e2e8f0]/90 hover:bg-[#dbe4f0] border border-slate-300 rounded-2xl p-4 sm:p-5 shadow-xs transition-all">
+        <div onclick="togglePortalBulletin()" class="flex items-center justify-between cursor-pointer select-none">
+          <div class="flex items-center gap-3">
+            <span class="p-2 bg-blue-600 text-white rounded-lg text-sm shadow-xs">📢</span>
+            <div>
+              <span class="text-lg sm:text-xl font-bold text-slate-900 block">公告事項</span>
+              <span class="text-xs text-slate-600">最新產銷通報 · 證書到期提醒 (4 件即期/逾期警示)</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono font-medium text-blue-900 bg-white/80 px-2.5 py-0.5 rounded border border-blue-200">
+              4 則公告
+            </span>
+            <button id="bulletin-toggle-btn" class="text-xs text-slate-600 hover:text-slate-900 font-bold">
+              展開詳情 ▼
+            </button>
+          </div>
+        </div>
+
+        <!-- 展開公告內容 -->
+        <div id="portal-bulletin-details" class="hidden mt-4 pt-4 border-t border-slate-300/60 space-y-2 text-xs">
+          <div class="p-3 bg-white/95 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <span class="px-1.5 py-0.5 rounded font-bold text-[10px] bg-rose-100 text-rose-800">緊急督導</span>
+              <span class="font-bold text-slate-900 ml-1.5">115年度第 2 季有機驗證證書展延清冊盤點催告</span>
+              <p class="text-slate-600 text-xs mt-0.5">請中區、南區駐地專員於 4/25 前完成慈耕楊文正、綠生農場之換證補件。</p>
+            </div>
+            <span class="text-[11px] text-slate-400 font-mono shrink-0">2026-04-14 · 陳建國</span>
+          </div>
+
+          <div class="p-3 bg-white/95 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <span class="px-1.5 py-0.5 rounded font-bold text-[10px] bg-amber-100 text-amber-800">政策通報</span>
+              <span class="font-bold text-slate-900 ml-1.5">農糧署公告修正有機農產品緩衝隔離帶採樣規範</span>
+              <p class="text-slate-600 text-xs mt-0.5">鄰田若有慣行噴藥疑慮，各專員需於訪查時拍照並填寫「有機五維度風險表」。</p>
+            </div>
+            <span class="text-[11px] text-slate-400 font-mono shrink-0">2026-04-10 · 張美琪</span>
+          </div>
+
+          <div class="flex justify-end pt-1">
+            <button onclick="switchTab('dashboard')" class="text-xs font-bold text-blue-800 hover:underline">
+              前往完整儀表板總覽查看所有證書卡片 →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第二大列：工作追蹤 (淺橘杏桃色橫條卡片) -->
+      <div class="bg-[#ffedd5]/90 hover:bg-[#ffe4c7] border border-amber-300 rounded-2xl p-4 sm:p-5 shadow-xs transition-all">
+        <div onclick="togglePortalTasks()" class="flex items-center justify-between cursor-pointer select-none">
+          <div class="flex items-center gap-3">
+            <span class="p-2 bg-amber-600 text-white rounded-lg text-sm shadow-xs">✅</span>
+            <div>
+              <span class="text-lg sm:text-xl font-bold text-slate-900 block">工作追蹤</span>
+              <span class="text-xs text-slate-600">產發會議追蹤事項 · 專員點選完成即時核銷</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="portal-task-counter" class="text-xs font-mono font-bold text-emerald-800 bg-white/80 px-2.5 py-0.5 rounded border border-amber-200">
+              已完成 2 / 5 項
+            </span>
+            <button id="tasks-toggle-btn" class="text-xs text-slate-600 hover:text-slate-900 font-bold">
+              展開追蹤 ▼
+            </button>
+          </div>
+        </div>
+
+        <!-- 展開工作追蹤核銷列表 -->
+        <div id="portal-tasks-details" class="hidden mt-4 pt-4 border-t border-amber-300/60 space-y-2 text-xs">
+          <div id="portal-task-items-container" class="space-y-2">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 2x3 鮮明亮黃圓角模組功能按鈕矩陣（手繪原型核心） -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+        
+        <!-- 卡片 1: 供應商資料 查詢 (第一列 左) -->
+        <button onclick="switchTab('grading')" class="group bg-[#fef08a] hover:bg-[#fde047] active:scale-[0.99] border-2 border-[#facc15] rounded-2xl p-6 sm:p-7 text-center shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center justify-center min-h-[125px]">
+          <span class="text-2xl sm:text-3xl font-black text-slate-900 tracking-wide block">
+            供應商資料
+          </span>
+          <span class="text-2xl sm:text-3xl font-black text-slate-900 tracking-wide block">
+            查詢
+          </span>
+          <span class="text-xs text-slate-700 font-medium mt-2 bg-white/80 px-3 py-0.5 rounded-full border border-amber-300">
+            A/B/C 分級評分矩陣 · 28 家契作農戶
+          </span>
+        </button>
+
+        <!-- 卡片 2: 重點品項 回報 (第一列 右) -->
+        <button onclick="switchTab('field')" class="group bg-[#fef08a] hover:bg-[#fde047] active:scale-[0.99] border-2 border-[#facc15] rounded-2xl p-6 sm:p-7 text-center shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center justify-center min-h-[125px]">
+          <span class="text-2xl sm:text-3xl font-black text-slate-900 tracking-wide block">
+            重點品項
+          </span>
+          <span class="text-2xl sm:text-3xl font-black text-slate-900 tracking-wide block">
+            回報
+          </span>
+          <span class="text-xs text-slate-700 font-medium mt-2 bg-white/80 px-3 py-0.5 rounded-full border border-amber-300">
+            種植 / 產出 / 品異 5 大卡片 · 所在地導航
+          </span>
+        </button>
+
+        <!-- 卡片 3: 行政表單 (第二列 左) -->
+        <button onclick="switchTab('forms')" class="group bg-[#fef08a] hover:bg-[#fde047] active:scale-[0.99] border-2 border-[#facc15] rounded-2xl p-6 sm:p-7 text-center shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center justify-center min-h-[125px]">
+          <span class="text-2xl sm:text-3xl font-black text-slate-900 tracking-wide block">
+            行政表單
+          </span>
+          <span class="text-xs text-slate-700 font-medium mt-2 bg-white/80 px-3 py-0.5 rounded-full border border-amber-300">
+            年度評估/風險/進價異動 · 自動暫存與結案
+          </span>
+        </button>
+
+        <!-- 卡片 4: 資料查詢 (第二列 右 - 有機五維度風險與法規) -->
+        <button onclick="switchTab('risk')" class="group bg-[#fef08a] hover:bg-[#fde047] active:scale-[0.99] border-2 border-[#facc15] rounded-2xl p-6 sm:p-7 text-center shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center justify-center min-h-[125px]">
+          <span class="text-2xl sm:text-3xl font-black text-slate-900 tracking-wide block">
+            資料查詢
+          </span>
+          <span class="text-xs text-slate-700 font-medium mt-2 bg-white/80 px-3 py-0.5 rounded-full border border-amber-300">
+            有機完整性五維度風險矩陣 (人事物地物)
+          </span>
+        </button>
+
+        <!-- 卡片 5: 會議資料 (第三列 左) -->
+        <button onclick="switchTab('meeting')" class="group bg-[#fef08a] hover:bg-[#fde047] active:scale-[0.99] border-2 border-[#facc15] rounded-2xl p-6 sm:p-7 text-center shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center justify-center min-h-[125px]">
+          <span class="text-2xl sm:text-3xl font-black text-slate-900 tracking-wide block">
+            會議資料
+          </span>
+          <span class="text-xs text-slate-700 font-medium mt-2 bg-white/80 px-3 py-0.5 rounded-full border border-amber-300">
+            產發會議紀錄 · 決議事項 · 簡報附件
+          </span>
+        </button>
+
+        <!-- 卡片 6: 儀表板總覽 (第三列 右) -->
+        <button onclick="switchTab('dashboard')" class="group bg-[#fef08a] hover:bg-[#fde047] active:scale-[0.99] border-2 border-[#facc15] rounded-2xl p-6 sm:p-7 text-center shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col items-center justify-center min-h-[125px]">
+          <span class="text-2xl sm:text-3xl font-black text-slate-900 tracking-wide block">
+            儀表板總覽
+          </span>
+          <span class="text-xs text-slate-700 font-medium mt-2 bg-white/80 px-3 py-0.5 rounded-full border border-amber-300">
+            關鍵 KPI · 證書預警矩陣 · 履約達成
+          </span>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- 【模組 1：工作追蹤與公告事項（頂部 Dashboard）】 -->
+    <section id="tab-dashboard" class="space-y-6 hidden">
+      <div class="mb-4 flex items-center justify-between">
+        <button onclick="switchTab('portal')" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg shadow-xs transition-colors cursor-pointer">
+          <span>← 返回多功能主選單 (Home)</span>
+        </button>
+        <span class="text-xs text-slate-400 font-mono">模組 1: 工作追蹤與公告事項視圖</span>
+      </div>
+      
+      <!-- Key KPI Tiles -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+          <div class="text-xs font-medium text-slate-500">合作供應商總數</div>
+          <div class="mt-2 text-2xl font-bold font-mono text-slate-900">28 <span class="text-xs text-slate-500 font-normal">家契作農戶</span></div>
+          <div class="mt-3 text-xs text-slate-500">
+            <span class="text-emerald-700 font-medium">A級 12</span> · 
+            <span class="text-blue-700 font-medium">B級 11</span> · 
+            <span class="text-rose-700 font-medium">C級 5</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+          <div class="text-xs font-medium text-slate-500">平均總契約達成率</div>
+          <div class="mt-2 text-2xl font-bold font-mono text-emerald-700">71.4%</div>
+          <div class="mt-3 text-xs text-slate-500">A級標準 ≧65% · <span class="text-emerald-700 font-medium">整體優良合作</span></div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+          <div class="text-xs font-medium text-slate-500">有機高風險專案列管</div>
+          <div class="mt-2 text-2xl font-bold font-mono text-rose-600">3 <span class="text-xs text-slate-500 font-normal">家需查核</span></div>
+          <div class="mt-3 text-xs text-rose-700 font-medium">美濃吳淑惠、苗栗大湖草莓</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+          <div class="text-xs font-medium text-slate-500">證書即期提醒</div>
+          <div class="mt-2 text-2xl font-bold font-mono text-amber-600">4 <span class="text-xs text-slate-500 font-normal">張待展延</span></div>
+          <div class="mt-3 text-xs text-slate-500">含 <span class="text-rose-600 font-mono font-bold">1</span> 張逾期證書需停權</div>
+        </div>
+      </div>
+
+      <!-- 證書到期提醒預警卡片 -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-base font-semibold text-slate-900">⚠️ 證書到期提醒：有機驗證即期預警卡片</h2>
+            <p class="text-xs text-slate-500 mt-0.5">以顏色標記到期緊急程度，預防農友換證空窗期影響供貨上架。</p>
+          </div>
+          <span class="text-xs font-mono text-slate-500">共 4 筆預警</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          <!-- 慈耕楊文正 (剩餘 18 天 - 警戒黃) -->
+          <div class="p-4 rounded-lg border border-amber-200 bg-amber-50/40">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="font-bold text-slate-900">慈耕楊文正</span>
+              <span class="font-mono bg-amber-600 text-white px-2 py-0.5 rounded text-xs font-medium">剩餘 18 天</span>
+            </div>
+            <div class="text-xs font-semibold text-slate-800 line-clamp-1">有機農產品驗證證書 (農糧署)</div>
+            <div class="text-xs text-slate-500 mt-1">機構：慈心有機驗證股份有限公司</div>
+            <div class="text-xs text-slate-400 font-mono mt-0.5">到期：2026-05-02</div>
+            <div class="flex gap-1.5 mt-3 pt-2 border-t border-amber-200/60">
+              <button onclick="alert('已發送催告通知至 楊文正 (0933-412-887)')" class="flex-1 py-1 text-xs bg-white border border-slate-200 rounded font-medium text-slate-700 hover:bg-slate-50">催告提醒</button>
+              <button onclick="switchTab('forms')" class="flex-1 py-1 text-xs bg-emerald-700 text-white rounded font-medium hover:bg-emerald-800">展延申請</button>
+            </div>
+          </div>
+
+          <!-- 綠生有機農場 (剩餘 14 天 - 警戒黃) -->
+          <div class="p-4 rounded-lg border border-amber-200 bg-amber-50/40">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="font-bold text-slate-900">綠生有機農場</span>
+              <span class="font-mono bg-amber-600 text-white px-2 py-0.5 rounded text-xs font-medium">剩餘 14 天</span>
+            </div>
+            <div class="text-xs font-semibold text-slate-800 line-clamp-1">水質與重金屬檢測報告 (年度)</div>
+            <div class="text-xs text-slate-500 mt-1">機構：中央畜產會農業檢驗所</div>
+            <div class="text-xs text-slate-400 font-mono mt-0.5">到期：2026-04-28</div>
+            <div class="flex gap-1.5 mt-3 pt-2 border-t border-amber-200/60">
+              <button onclick="alert('已發送催告通知至 陳柏宇 (0912-883-219)')" class="flex-1 py-1 text-xs bg-white border border-slate-200 rounded font-medium text-slate-700 hover:bg-slate-50">催告提醒</button>
+              <button onclick="switchTab('forms')" class="flex-1 py-1 text-xs bg-emerald-700 text-white rounded font-medium hover:bg-emerald-800">展延申請</button>
+            </div>
+          </div>
+
+          <!-- 吳淑惠 (已逾期 5 天 - 警戒紅) -->
+          <div class="p-4 rounded-lg border border-rose-200 bg-rose-50/40">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="font-bold text-slate-900">吳淑惠 (淑惠農園)</span>
+              <span class="font-mono bg-rose-600 text-white px-2 py-0.5 rounded text-xs font-medium">已逾期 5 天</span>
+            </div>
+            <div class="text-xs font-semibold text-slate-800 line-clamp-1">友善環境耕作審認證明</div>
+            <div class="text-xs text-slate-500 mt-1">機構：台灣農業友善推廣協會</div>
+            <div class="text-xs text-slate-400 font-mono mt-0.5">到期：2026-04-09</div>
+            <div class="flex gap-1.5 mt-3 pt-2 border-t border-rose-200/60">
+              <button onclick="alert('已啟動停權交貨警示流程！')" class="flex-1 py-1 text-xs bg-rose-700 text-white rounded font-medium hover:bg-rose-800">停權處置</button>
+              <button onclick="switchTab('forms')" class="flex-1 py-1 text-xs bg-white border border-slate-200 text-slate-700 rounded font-medium hover:bg-slate-50">補件審核</button>
+            </div>
+          </div>
+
+          <!-- 南投農產合作社 (剩餘 42 天 - 穩定綠) -->
+          <div class="p-4 rounded-lg border border-slate-200 bg-slate-50">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="font-bold text-slate-900">南投農產合作社</span>
+              <span class="font-mono bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-xs font-medium">剩餘 42 天</span>
+            </div>
+            <div class="text-xs font-semibold text-slate-800 line-clamp-1">產銷履歷驗證 (TAP)</div>
+            <div class="text-xs text-slate-500 mt-1">機構：國立成功大學永續中心</div>
+            <div class="text-xs text-slate-400 font-mono mt-0.5">到期：2026-05-26</div>
+            <div class="flex gap-1.5 mt-3 pt-2 border-t border-slate-200">
+              <button onclick="alert('展延手續已排定 5/10 現場複評')" class="w-full py-1 text-xs bg-white border border-slate-200 rounded font-medium text-slate-700 hover:bg-slate-50">追蹤排程</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Split: 主管公佈欄 & 產發會議追蹤事項（專員點選完成） -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- 主管公佈欄 (5 cols) -->
+        <div class="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-base font-semibold text-slate-900">📌 主管公佈欄與產發政策</h2>
+            <span class="text-xs text-slate-400">即時更新</span>
+          </div>
+          <div class="space-y-3">
+            <div class="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50">
+              <div class="flex justify-between text-xs mb-1">
+                <span class="bg-rose-100 text-rose-800 px-1.5 py-0.5 rounded font-medium">緊急督導</span>
+                <span class="text-slate-400 font-mono">2026-04-12</span>
+              </div>
+              <h3 class="text-xs font-bold text-slate-900">【重要】第二季有機證書全面清查與展延申辦</h3>
+              <p class="text-xs text-slate-600 mt-1">各區產銷專員務必於本周五前完成盤點負責農友證書效期，低於 30 天者應主動輔導換證。</p>
+              <div class="text-[11px] text-slate-400 mt-2">發佈：陳建國 (採購部主管)</div>
+            </div>
+
+            <div class="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50">
+              <div class="flex justify-between text-xs mb-1">
+                <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-medium">重點政策</span>
+                <span class="text-slate-400 font-mono">2026-04-10</span>
+              </div>
+              <h3 class="text-xs font-bold text-slate-900">【產發政策】端午檔期主力有機蔬果產出預報提早收單</h3>
+              <p class="text-xs text-slate-600 mt-1">因應促銷專案，請專員輔導農民精準登打種植與採收預報，落差值控制在 10% 以內。</p>
+              <div class="text-[11px] text-slate-400 mt-2">發佈：林志明 (產銷發展部)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 產發會議追蹤事項（專員點選完成互動勾選框） (7 cols) -->
+        <div class="lg:col-span-7 bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-base font-semibold text-slate-900">✅ 產發會議追蹤事項（專員點選完成）</h2>
+              <p class="text-xs text-slate-500 mt-0.5">提供專員互動核銷勾選框，點選時即時計算完成狀態。</p>
+            </div>
+            <span id="task-counter" class="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded">完成 2 / 5 項</span>
+          </div>
+
+          <div class="space-y-2.5" id="task-list-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 【模組 2：供應商資料查詢與年度考核分級】 -->
+    <section id="tab-grading" class="space-y-6 hidden">
+      <div class="mb-4 flex items-center justify-between">
+        <button onclick="switchTab('portal')" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg shadow-xs transition-colors cursor-pointer">
+          <span>← 返回多功能主選單 (Home)</span>
+        </button>
+        <span class="text-xs text-slate-400 font-mono">模組 2: 供應商分級矩陣視圖</span>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+        <h2 class="text-base font-bold text-slate-900">供應商資料查詢與年度考核分級總表</h2>
+        <p class="text-xs text-slate-600 mt-1">
+          總契約達成率換算邏輯：<strong class="text-emerald-700 font-mono">A 級 ≧ 65%（優良合作）</strong>、
+          <strong class="text-blue-700 font-mono">B 級 50%~64%（穩定合作）</strong>、
+          <strong class="text-rose-700 font-mono">C 級 &lt; 50%（改善觀察）</strong>。
+          評分矩陣完整涵蓋專員配合度(20%)、發展潛力(15%)、採購交貨品質(25%)、總契約達成率(25%)與主力品項達成率(15%)。
+        </p>
+      </div>
+
+      <!-- 關鍵字搜尋與區域/等級篩選 -->
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
+        <input type="text" id="supplier-search" oninput="renderSupplierTable()" placeholder="關鍵字搜尋 (如: 慈耕楊文正、南投合作社、吳淑惠)..." class="p-2 border border-slate-300 rounded-lg w-72 focus:outline-hidden focus:ring-1 focus:ring-emerald-500">
+        <div class="flex gap-2">
+          <select id="grade-filter" onchange="renderSupplierTable()" class="p-2 border border-slate-300 rounded-lg bg-white">
+            <option value="all">考核等級 (全部)</option>
+            <option value="A">A 級（優良合作 ≧65%）</option>
+            <option value="B">B 級（穩定合作 50~64%）</option>
+            <option value="C">C 級（改善觀察 &lt;50%）</option>
+          </select>
+          <select id="region-filter" onchange="renderSupplierTable()" class="p-2 border border-slate-300 rounded-lg bg-white">
+            <option value="all">產銷區域 (全部)</option>
+            <option value="北部">北區</option>
+            <option value="中部">中區</option>
+            <option value="南部">南區</option>
+            <option value="東部">東區</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 供應商資訊總表與分級評分矩陣 -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+              <th class="py-3 px-4">基本資料 (編號 / 名稱)</th>
+              <th class="py-3 px-3">區域 / 主力品項</th>
+              <th class="py-3 px-3 text-center bg-slate-100/50">
+                <div class="text-slate-800 font-bold">總契約達成率</div>
+                <div class="text-[10px] text-slate-400 font-normal">A≧65%·B 50-64%·C&lt;50%</div>
+              </th>
+              <th class="py-3 px-3 text-center">
+                <div>主力品項達成率</div>
+                <div class="text-[10px] text-slate-400 font-normal">系統數據 15%</div>
+              </th>
+              <th class="py-3 px-3 text-center">
+                <div>採購自評：交貨品質</div>
+                <div class="text-[10px] text-slate-400 font-normal">權重 25%</div>
+              </th>
+              <th class="py-3 px-3 text-center">
+                <div>專員自評：配合度 / 潛力</div>
+                <div class="text-[10px] text-slate-400 font-normal">配合 20% · 潛力 15%</div>
+              </th>
+              <th class="py-3 px-3 text-center">最終等級</th>
+              <th class="py-3 px-3 text-center">有機完整性</th>
+              <th class="py-3 px-4 text-right">即時試算</th>
+            </tr>
+          </thead>
+          <tbody id="supplier-tbody" class="divide-y divide-slate-100">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 【模組 3：有機完整性風險分級矩陣（建構中）】 -->
+    <section id="tab-risk" class="space-y-6 hidden">
+      <div class="mb-4 flex items-center justify-between">
+        <button onclick="switchTab('portal')" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg shadow-xs transition-colors cursor-pointer">
+          <span>← 返回多功能主選單 (Home)</span>
+        </button>
+        <span class="text-xs text-slate-400 font-mono">模組 3: 有機五維度風險視圖</span>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+        <div class="flex items-center gap-2">
+          <h2 class="text-base font-bold text-slate-900">有機完整性風險分級矩陣（建構中）</h2>
+          <span class="text-xs bg-emerald-50 text-emerald-800 font-mono px-2 py-0.5 rounded">5-Dimensions</span>
+        </div>
+        <p class="text-xs text-slate-600 mt-1">
+          包含五大評估維度標籤：<strong>人（有機概念）</strong>、<strong>事（年度矯正預防）</strong>、
+          <strong>時（田區高風險時間）</strong>、<strong>地（各田區風險）</strong>、<strong>物（資材風險）</strong>。
+          燈號與管理策略：
+          <span class="text-emerald-700 font-bold">低風險（例行追蹤 ≧80分）</span>、
+          <span class="text-amber-700 font-bold">中風險（加強查核 60~79分）</span>、
+          <span class="text-rose-700 font-bold">高風險（專案查核與供應管制 &lt;60分）</span>。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- 供應商選單 (4 cols) -->
+        <div class="lg:col-span-4 space-y-2" id="risk-supplier-list">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- 5 維度細目評估主控台 (8 cols) -->
+        <div class="lg:col-span-8 bg-white rounded-xl border border-slate-200 p-6 shadow-xs" id="risk-detail-console">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 【模組 4：行政表單整合與暫存／結案流程】 -->
+    <section id="tab-forms" class="space-y-6 hidden">
+      <div class="mb-4 flex items-center justify-between">
+        <button onclick="switchTab('portal')" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg shadow-xs transition-colors cursor-pointer">
+          <span>← 返回多功能主選單 (Home)</span>
+        </button>
+        <span class="text-xs text-slate-400 font-mono">模組 4: 行政表單視圖</span>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">行政表單整合與暫存／結案流程</h2>
+          <p class="text-xs text-slate-600 mt-1">
+            收納「供應商年度評估表」、「風險評估表」、「品項進價異動表」、「新增品項異動表」四大表單。
+            支援自動儲存至「暫存區」（按修改日期新到舊排序），提供「按下結案」將資料移至「結案區」並清除暫存。
+          </p>
+        </div>
+        <button onclick="openFormModal()" class="px-3 py-2 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-lg shadow-xs whitespace-nowrap">
+          + 開立新異動表單
+        </button>
+      </div>
+
+      <!-- 暫存區 / 結案區 切換 -->
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div class="flex gap-1 bg-slate-100 p-1 rounded-lg">
+          <button onclick="setFormTab('draft')" id="ftab-draft" class="px-3.5 py-1.5 font-bold bg-white rounded text-slate-900 shadow-xs">
+            暫存區 (草稿)
+          </button>
+          <button onclick="setFormTab('closed')" id="ftab-closed" class="px-3.5 py-1.5 font-medium text-slate-600">
+            結案區 (已封存)
+          </button>
+          <button onclick="setFormTab('all')" id="ftab-all" class="px-3 py-1.5 font-medium text-slate-600">
+            全部清冊
+          </button>
+        </div>
+        <div class="text-xs text-slate-400 font-mono">
+          按修改日期由新到舊排序 · 點選「按下結案」即移入結案區
+        </div>
+      </div>
+
+      <!-- Forms Table -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+              <th class="py-3 px-4">表單編號 / 表單選單</th>
+              <th class="py-3 px-3">供應商</th>
+              <th class="py-3 px-4">主旨與異動內容摘要</th>
+              <th class="py-3 px-3 text-center">狀態分區</th>
+              <th class="py-3 px-3 text-center">最後修改/暫存時間</th>
+              <th class="py-3 px-4 text-right">流程操作</th>
+            </tr>
+          </thead>
+          <tbody id="forms-tbody" class="divide-y divide-slate-100">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 【模組 5：行動訪查與日常供應回報】 -->
+    <section id="tab-field" class="space-y-6 hidden">
+      <div class="mb-4 flex items-center justify-between">
+        <button onclick="switchTab('portal')" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg shadow-xs transition-colors cursor-pointer">
+          <span>← 返回多功能主選單 (Home)</span>
+        </button>
+        <span class="text-xs text-slate-400 font-mono">模組 5: 行動訪查與日常供應視圖</span>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">行動訪查與日常供應回報</h2>
+          <p class="text-xs text-slate-600 mt-1">
+            提供「所在地導航」虛擬按鈕自動帶出訪查前歷史等級與品質評估。收納日常供應管理 5 大回報分頁/卡片。
+          </p>
+        </div>
+        <!-- 「所在地導航」虛擬按鈕 -->
+        <button onclick="simulateGPSNavigation()" class="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-lg shadow-xs whitespace-nowrap">
+          <span>📍 所在地導航 (帶出歷史等級與品質)</span>
+        </button>
+      </div>
+
+      <!-- 訪查前歷史等級與品質評估資料 (由所在地導航自動帶出) -->
+      <div id="previsit-banner" class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-4 text-xs">
+        <div class="flex justify-between items-center pb-2 border-b border-emerald-200/60 mb-2">
+          <span class="font-bold text-slate-900">訪查前歷史等級與品質評估資料：<span id="nav-supplier-name" class="text-emerald-800 font-bold">慈耕楊文正</span></span>
+          <span class="font-mono text-emerald-800 font-bold bg-white px-2 py-0.5 rounded border border-emerald-300">A 級（優良合作）</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-white p-2 rounded border border-emerald-100">
+            <span class="text-slate-400 text-[10px] block">總契約達成率</span>
+            <span id="nav-contract-rate" class="font-mono font-bold text-emerald-700 text-sm">84%</span>
+            <span class="text-[10px] text-slate-400 block">≧65% 優良標準</span>
+          </div>
+          <div class="bg-white p-2 rounded border border-emerald-100">
+            <span class="text-slate-400 text-[10px] block">採購品質自評</span>
+            <span id="nav-quality-score" class="font-mono font-bold text-slate-800 text-sm">92 分</span>
+            <span class="text-[10px] text-slate-400 block">交貨零殘留</span>
+          </div>
+          <div class="bg-white p-2 rounded border border-emerald-100">
+            <span class="text-slate-400 text-[10px] block">專員配合度</span>
+            <span id="nav-coop-score" class="font-mono font-bold text-slate-800 text-sm">95 分</span>
+            <span class="text-[10px] text-slate-400 block">出貨準時率高</span>
+          </div>
+          <div class="bg-white p-2 rounded border border-emerald-100">
+            <span class="text-slate-400 text-[10px] block">有機五維度風險</span>
+            <span id="nav-risk-label" class="font-mono font-bold text-emerald-700 text-sm">低風險 (91.8分)</span>
+            <span class="text-[10px] text-slate-400 block">例行追蹤</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 日常供應管理 5 大回報分頁/卡片 -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Form (7 cols) -->
+        <div class="lg:col-span-7 bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
+          
+          <!-- 5 大回報分頁按鈕 -->
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 mb-5 text-xs">
+            <button type="button" onclick="setFieldCardTab('planting')" id="fc-planting" class="p-2 rounded-lg border border-emerald-600 bg-emerald-50 text-emerald-800 font-bold text-center">
+              1. 種植回報
+            </button>
+            <button type="button" onclick="setFieldCardTab('yield')" id="fc-yield" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-center">
+              2. 產出預報
+            </button>
+            <button type="button" onclick="setFieldCardTab('supplier_update')" id="fc-supplier_update" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-center">
+              3. 資料更新
+            </button>
+            <button type="button" onclick="setFieldCardTab('procurement_forecast')" id="fc-procurement_forecast" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-center">
+              4. 採購預報
+            </button>
+            <button type="button" onclick="setFieldCardTab('quality_capa')" id="fc-quality_capa" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-center">
+              5. 品異改善
+            </button>
+          </div>
+
+          <form onsubmit="handleFieldSubmit(event)" class="space-y-4 text-xs">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-medium text-slate-700 mb-1">契作農場 / 供應商</label>
+                <select id="field-supplier" onchange="updateNavSupplier(this.value)" class="w-full p-2 border border-slate-300 rounded-lg bg-white">
+                  <option value="慈耕楊文正">慈耕楊文正 (A級 · 埔里)</option>
+                  <option value="南投農產合作社">南投農產合作社 (A級 · 名間)</option>
+                  <option value="綠生有機農場">綠生有機農場 (B級 · 新化)</option>
+                  <option value="吳淑惠">吳淑惠 (C級 · 美濃)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-medium text-slate-700 mb-1">田區地號 / GPS 鎖定</label>
+                <input type="text" id="field-location" value="南投縣埔里鎮大湳段 128 號 (23.9738° N, 120.9821° E)" class="w-full p-2 border border-slate-300 rounded-lg bg-slate-50 font-mono text-xs">
+              </div>
+            </div>
+
+            <!-- Card 1: 種植回報 -->
+            <div id="card-content-planting" class="space-y-3 p-3.5 bg-emerald-50/40 rounded-lg border border-emerald-100">
+              <span class="font-bold text-slate-800 block">【種植回報】品項、面積與定植日期</span>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-slate-600 block mb-1">作物品名與品種</label>
+                  <input type="text" id="field-crop" value="有機彩色甜椒 (荷蘭橘豹)" class="w-full p-2 border border-slate-300 rounded bg-white">
+                </div>
+                <div>
+                  <label class="text-slate-600 block mb-1">定植面積 (公頃)</label>
+                  <input type="number" step="0.1" value="0.8" class="w-full p-2 border border-slate-300 rounded bg-white font-mono">
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: 產出預報 -->
+            <div id="card-content-yield" class="space-y-3 p-3.5 bg-blue-50/40 rounded-lg border border-blue-100 hidden">
+              <span class="font-bold text-slate-800 block">【產出預報】預估採收日與重量</span>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-slate-600 block mb-1">預計採收日期</label>
+                  <input type="date" value="2026-04-25" class="w-full p-2 border border-slate-300 rounded bg-white">
+                </div>
+                <div>
+                  <label class="text-slate-600 block mb-1">預估採收總量 (kg)</label>
+                  <input type="number" id="field-weight" value="4500" class="w-full p-2 border border-slate-300 rounded bg-white font-mono">
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: 供應商資料更新 -->
+            <div id="card-content-supplier_update" class="space-y-3 p-3.5 bg-slate-50 rounded-lg border border-slate-200 hidden">
+              <span class="font-bold text-slate-800 block">【供應商資料更新】基本資訊與地號</span>
+              <div>
+                <label class="text-slate-600 block mb-1">通訊電話與負責專員異動</label>
+                <input type="text" value="0933-412-887 · 增設生產窗口：楊小明" class="w-full p-2 border border-slate-300 rounded bg-white">
+              </div>
+            </div>
+
+            <!-- Card 4: 採購預報 -->
+            <div id="card-content-procurement_forecast" class="space-y-3 p-3.5 bg-amber-50/40 rounded-lg border border-amber-100 hidden">
+              <span class="font-bold text-slate-800 block">【採購預報】檔期配額與需求</span>
+              <div>
+                <label class="text-slate-600 block mb-1">檔期活動預報與規格要求</label>
+                <input type="text" value="端午連假生鮮促銷主打，每週收購 1,200 kg 規格。" class="w-full p-2 border border-slate-300 rounded bg-white">
+              </div>
+            </div>
+
+            <!-- Card 5: 品異互動與改善 -->
+            <div id="card-content-quality_capa" class="space-y-3 p-3.5 bg-rose-50/40 rounded-lg border border-rose-100 hidden">
+              <span class="font-bold text-slate-800 block">【品異互動與改善】異常改善措施 (CAPA)</span>
+              <div>
+                <label class="text-slate-600 block mb-1">農友現地因應改善措施</label>
+                <input type="text" value="已調控溫室夜間滴灌頻率，採收籃全面加裝EVA防震墊。" class="w-full p-2 border border-slate-300 rounded bg-white">
+              </div>
+            </div>
+
+            <div>
+              <label class="font-medium text-slate-700 block mb-1">現場訪查備註說明</label>
+              <textarea id="field-notes" rows="2" class="w-full p-2.5 border border-slate-300 rounded-lg bg-white" placeholder="植株開花率 85%，根系生長健壯，防護網室無破損..."></textarea>
+            </div>
+
+            <div class="flex justify-end pt-2">
+              <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-lg shadow-xs">
+                提交訪查與日常供應回報
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Timeline (5 cols) -->
+        <div class="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+          <h3 class="text-sm font-bold text-slate-900 mb-3">📋 日常供應回報動態</h3>
+          <div class="space-y-3" id="field-log-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 【會議資料專區】 -->
+    <section id="tab-meeting" class="space-y-6 hidden">
+      <div class="mb-4 flex items-center justify-between">
+        <button onclick="switchTab('portal')" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg shadow-xs transition-colors cursor-pointer">
+          <span>← 返回多功能主選單 (Home)</span>
+        </button>
+        <span class="text-xs text-slate-400 font-mono">產發會議資料專區</span>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+        <div class="flex items-center gap-2">
+          <h2 class="text-base font-bold text-slate-900">會議資料與產發議事專區</h2>
+          <span class="text-xs bg-amber-50 text-amber-800 px-2 py-0.5 rounded font-mono">Conference Docs</span>
+        </div>
+        <p class="text-xs text-slate-600 mt-1">
+          收錄每週產銷發展例會、採購審查會議與食安稽核會議之議程、決議事項紀錄與簡報附件。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- 會議選單 (4 cols) -->
+        <div class="lg:col-span-4 space-y-3">
+          <div class="text-xs font-bold text-slate-500 uppercase px-1">歷次產發與採購例會</div>
+          <div class="space-y-2">
+            <div class="p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-50/70 shadow-xs cursor-pointer">
+              <span class="text-[10px] font-mono bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded font-bold">最新例會</span>
+              <h3 class="text-xs font-bold text-slate-900 mt-1.5">115年度第 14 次產銷發展與供應商管理例會</h3>
+              <div class="text-[11px] text-slate-500 mt-1">2026-04-08 · 主席：陳建國 (採購部)</div>
+            </div>
+
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-colors cursor-pointer">
+              <span class="text-[10px] font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium">食安專案</span>
+              <h3 class="text-xs font-bold text-slate-900 mt-1.5">115年度第一季食安稽核與有機完整性總結會議</h3>
+              <div class="text-[11px] text-slate-500 mt-1">2026-03-25 · 主席：張美琪 (食安稽核)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 會議詳情與議程 (8 cols) -->
+        <div class="lg:col-span-8 bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-5 text-xs">
+          <div class="border-b border-slate-200 pb-4">
+            <span class="text-base font-bold text-slate-900 block">115年度第 14 次產銷發展與供應商管理例會</span>
+            <div class="flex flex-wrap gap-4 text-slate-500 mt-2 text-[11px]">
+              <span>📅 2026-04-08 09:30 - 11:30</span>
+              <span>📍 農產運銷總部 3F 第一會議室</span>
+              <span>👤 主席：陳建國 (採購主管)</span>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-slate-800 mb-2">📋 會議議程與研討要點</h4>
+            <ul class="space-y-1.5 text-slate-600 bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+              <li>1. 第二季有機農產品驗證證書到期盤點與催告專案 (慈耕楊文正、綠生農場等)。</li>
+              <li>2. 端午檔期主力有機蔬果產出預報提早收單與冷鏈直發排程。</li>
+              <li>3. 針對吳淑惠 (C級) 契約達成率低於 50% 啟動個別改善面談與輔導措施。</li>
+              <li>4. 南投農產合作社夏季冷泡茶契作面積擴充會勘評估報告。</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-slate-800 mb-2">🎯 主席裁示與重大決議</h4>
+            <div class="p-3.5 rounded-lg border border-amber-200 bg-amber-50/40 text-amber-900 leading-relaxed font-medium">
+              主席裁示：本季各區務必落實「五維度有機風險」田間巡檢，低於 30 天證書未展延者嚴格管制供貨；美濃與大湖專案持續個別輔導列管。
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-slate-800 mb-2">📎 會議簡報與附件下載</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <button onclick="alert('已模擬下載：115年度Q2各區有機證書效期統計表.pdf')" class="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 text-left">
+                <span class="font-bold text-slate-800 block text-[11px] truncate">115年Q2證書統計表.pdf</span>
+                <span class="text-[10px] text-slate-400">2.4 MB · 點擊下載</span>
+              </button>
+              <button onclick="alert('已模擬下載：端午檔期主力品項契作供需預估簡報.pptx')" class="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 text-left">
+                <span class="font-bold text-slate-800 block text-[11px] truncate">端午契作供需簡報.pptx</span>
+                <span class="text-[10px] text-slate-400">5.8 MB · 點擊下載</span>
+              </button>
+              <button onclick="alert('已模擬下載：供應商A_B_C年度評分矩陣總表.xlsx')" class="p-2.5 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 text-left">
+                <span class="font-bold text-slate-800 block text-[11px] truncate">年度評分矩陣總表.xlsx</span>
+                <span class="text-[10px] text-slate-400">1.2 MB · 點擊下載</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // 擬真示範資料（慈耕楊文正、南投合作社、綠生農場、吳淑惠）
+    const suppliers = [
+      {
+        id: 'sup-1',
+        name: '慈耕楊文正',
+        code: 'SUP-2026-A01',
+        region: '中部',
+        crops: '有機甜椒、溫室牛番茄',
+        contractRate: 84, // A 級 ≧ 65%
+        mainCategoryRate: 88,
+        qualityScore: 92,
+        cooperationScore: 95,
+        potentialScore: 90,
+        grade: 'A',
+        riskLevel: 'low',
+        risk5D: { human: 95, matter: 90, time: 88, place: 92, material: 94, total: 91.8 },
+        notes: '30年有機資歷，全場專屬高床溫室，資材帳冊登載落實。'
+      },
+      {
+        id: 'sup-2',
+        name: '南投農產合作社',
+        code: 'SUP-2026-A02',
+        region: '中部',
+        crops: '有機烏龍茶、生茶、生薑',
+        contractRate: 74, // A 級 ≧ 65%
+        mainCategoryRate: 78,
+        qualityScore: 88,
+        cooperationScore: 85,
+        potentialScore: 84,
+        grade: 'A',
+        riskLevel: 'low',
+        risk5D: { human: 86, matter: 82, time: 75, place: 80, material: 85, total: 81.6 },
+        notes: '合作社社員落實共同用藥稽查，集中制茶廠有獨立有機線。'
+      },
+      {
+        id: 'sup-3',
+        name: '綠生有機農場',
+        code: 'SUP-2026-B01',
+        region: '南部',
+        crops: '有機小松菜、荷蘭萵苣',
+        contractRate: 58, // B 級 50%~64%
+        mainCategoryRate: 62,
+        qualityScore: 82,
+        cooperationScore: 78,
+        potentialScore: 70,
+        grade: 'B',
+        riskLevel: 'medium',
+        risk5D: { human: 72, matter: 68, time: 65, place: 60, material: 75, total: 68.0 },
+        notes: '東側鄰田為常規鳳梨園，梅雨季需留意空飄農藥；需加強防風網。'
+      },
+      {
+        id: 'sup-4',
+        name: '吳淑惠 (淑惠農園)',
+        code: 'SUP-2026-C01',
+        region: '南部',
+        crops: '美濃澄蜜香番茄、白玉蘿蔔',
+        contractRate: 42, // C 級 < 50%
+        mainCategoryRate: 45,
+        qualityScore: 68,
+        cooperationScore: 60,
+        potentialScore: 55,
+        grade: 'C',
+        riskLevel: 'high',
+        risk5D: { human: 55, matter: 48, time: 52, place: 46, material: 50, total: 50.2 },
+        notes: '交貨規格不符率偏高，契約達成率低於50%，鄰田噴藥緩衝帶未達標準，列入專案查核與供應管制。'
+      }
+    ];
+
+    const tasks = [
+      { id: 1, title: '輔導慈耕楊文正完成有機證書展延補件 (剩18天)', completed: false, assignee: '林志明' },
+      { id: 2, title: '南投農產合作社夏季冷泡茶契作面積會勘', completed: true, assignee: '王維平' },
+      { id: 3, title: '吳淑惠 (C級) 契約達成率 < 50% 啟動個別改善面談', completed: false, assignee: '高子翔' },
+      { id: 4, title: '綠生有機農場水質與重金屬檢測報告送驗', completed: false, assignee: '張美琪' },
+      { id: 5, title: '全台合作農場有機五維度風險指標數據定期審定', completed: true, assignee: '林志明' }
+    ];
+
+    // 四大表單選單：供應商年度評估表、風險評估表、品項進價異動表、新增品項異動表
+    let forms = [
+      { id: 'FORM-001', type: '供應商年度評估表', supplier: '慈耕楊文正', title: '2026 年度慈耕楊文正供應商綜合評估表 (初評A級)', status: 'draft', time: '14:32:00', summary: '總契約達成率84%，品質自評92分，建議列為A級優良合作。' },
+      { id: 'FORM-002', type: '品項進價異動表', supplier: '南投農產合作社', title: '有機生薑進價調幅申請表', status: 'draft', time: '14:28:15', summary: '原進價 NT$ 85 擬調為 NT$ 95，反映堆肥與工資漲幅。' },
+      { id: 'FORM-003', type: '新增品項異動表', supplier: '南投農產合作社', title: '新增四季春冷泡生茶契作規格', status: 'draft', time: '13:10:00', summary: '新增500ml冷泡茶契作，預估月供應1,500瓶。' },
+      { id: 'FORM-004', type: '風險評估表', supplier: '綠生有機農場', title: '東側鄰田空飄農藥五維度專案查核', status: 'draft', time: '11:15:30', summary: '針對鄰田噴藥風險，建議增設3米防風網隔離。' },
+      { id: 'FORM-005', type: '供應商年度評估表', supplier: '吳淑惠', title: '2025 年度考核結案與改善輔導列管', status: 'closed', time: '2025-12-25', summary: '總契約達成率低於50%，主管核定結案轉列專案管制觀察。' }
+    ];
+
+    let currentRiskSupplier = suppliers[0];
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-emerald-800', 'bg-emerald-50', 'font-bold');
+        btn.classList.add('text-slate-600');
+      });
+      const activeNav = document.getElementById('nav-' + tabId);
+      if (activeNav) {
+        activeNav.classList.remove('text-slate-600');
+        activeNav.classList.add('text-emerald-800', 'bg-emerald-50', 'font-bold');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function togglePortalBulletin() {
+      const details = document.getElementById('portal-bulletin-details');
+      const btn = document.getElementById('bulletin-toggle-btn');
+      if (details.classList.contains('hidden')) {
+        details.classList.remove('hidden');
+        btn.innerText = '收合 ▲';
+      } else {
+        details.classList.add('hidden');
+        btn.innerText = '展開詳情 ▼';
+      }
+    }
+
+    function togglePortalTasks() {
+      const details = document.getElementById('portal-tasks-details');
+      const btn = document.getElementById('tasks-toggle-btn');
+      if (details.classList.contains('hidden')) {
+        details.classList.remove('hidden');
+        btn.innerText = '收合 ▲';
+      } else {
+        details.classList.add('hidden');
+        btn.innerText = '展開追蹤 ▼';
+      }
+    }
+
+    function renderPortalTasks() {
+      const container = document.getElementById('portal-task-items-container');
+      if (!container) return;
+      container.innerHTML = tasks.map(t => `
+        <div onclick="toggleTask(${t.id})" class="p-2.5 rounded-xl border flex items-center justify-between gap-3 cursor-pointer transition-colors ${
+          t.completed ? 'bg-white/60 border-slate-200 text-slate-400' : 'bg-white border-amber-200 text-slate-800 hover:border-amber-400'
+        }">
+          <div class="flex items-center gap-2">
+            <input type="checkbox" ${t.completed ? 'checked' : ''} class="h-4 w-4 text-emerald-600 rounded cursor-pointer accent-emerald-600 pointer-events-none">
+            <span class="font-medium ${t.completed ? 'line-through text-slate-400' : 'text-slate-900'}">${t.title}</span>
+          </div>
+          <div class="text-[11px] font-mono shrink-0">
+            ${t.completed ? '<span class="text-emerald-700 font-bold">✓ 專員已完成</span>' : `<span class="text-amber-800">專員：${t.assignee}</span>`}
+          </div>
+        </div>
+      `).join('');
+      const completedCount = tasks.filter(t => t.completed).length;
+      const counter = document.getElementById('portal-task-counter');
+      if (counter) counter.innerText = `已完成 ${completedCount} / ${tasks.length} 項`;
+    }
+
+    // 模組 1: Render Tasks Checklist
+    function renderTasks() {
+      const container = document.getElementById('task-list-container');
+      container.innerHTML = tasks.map(t => `
+        <div class="p-3 rounded-lg border border-slate-200 flex items-start gap-3 transition-colors ${t.completed ? 'bg-slate-50 text-slate-400' : 'bg-white hover:border-emerald-300'}">
+          <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask(${t.id})" class="mt-1 h-4 w-4 text-emerald-600 rounded cursor-pointer accent-emerald-600">
+          <div class="flex-1 cursor-pointer" onclick="toggleTask(${t.id})">
+            <div class="text-xs font-semibold ${t.completed ? 'line-through text-slate-400' : 'text-slate-900'}">${t.title}</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">專員：${t.assignee} · ${t.completed ? '<span class="text-emerald-700 font-bold">✓ 專員已完成勾選</span>' : '<span class="text-amber-700">進行中</span>'}</div>
+          </div>
+        </div>
+      `).join('');
+      const completedCount = tasks.filter(t => t.completed).length;
+      document.getElementById('task-counter').innerText = `完成 ${completedCount} / ${tasks.length} 項`;
+    }
+
+    function toggleTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (task) task.completed = !task.completed;
+      renderTasks();
+      renderPortalTasks();
+    }
+
+    // 模組 2: Render Supplier Table with exact A/B/C labels
+    function renderSupplierTable() {
+      const search = document.getElementById('supplier-search').value.toLowerCase();
+      const gradeF = document.getElementById('grade-filter').value;
+      const regionF = document.getElementById('region-filter').value;
+      const tbody = document.getElementById('supplier-tbody');
+
+      const filtered = suppliers.filter(s => {
+        const matchesSearch = s.name.includes(search) || s.code.toLowerCase().includes(search);
+        const matchesGrade = gradeF === 'all' || s.grade === gradeF;
+        const matchesRegion = regionF === 'all' || s.region === regionF;
+        return matchesSearch && matchesGrade && matchesRegion;
+      });
+
+      tbody.innerHTML = filtered.map(s => {
+        const gradeLabel = s.grade === 'A' ? 'A 級（優良合作）' : (s.grade === 'B' ? 'B 級（穩定合作）' : 'C 級（改善觀察）');
+        const gradeColor = s.grade === 'A' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : (s.grade === 'B' ? 'bg-blue-50 text-blue-800 border-blue-200' : 'bg-rose-50 text-rose-800 border-rose-200');
+        const riskLabel = s.riskLevel === 'low' ? '低風險（例行追蹤）' : (s.riskLevel === 'medium' ? '中風險（加強查核）' : '高風險（專案查核與供應管制）');
+        const riskColor = s.riskLevel === 'low' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : (s.riskLevel === 'medium' ? 'text-amber-700 bg-amber-50 border-amber-200' : 'text-rose-700 bg-rose-50 border-rose-200');
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4">
+              <div class="font-bold text-slate-900">${s.name}</div>
+              <div class="text-[11px] font-mono text-slate-400">${s.code}</div>
+            </td>
+            <td class="py-3 px-3">
+              <div class="text-slate-800 font-medium">${s.crops}</div>
+              <div class="text-[11px] text-slate-400">${s.region} · 契作農場</div>
+            </td>
+            <td class="py-3 px-3 text-center bg-slate-50 font-mono font-bold text-sm ${s.contractRate >= 65 ? 'text-emerald-700' : (s.contractRate >= 50 ? 'text-blue-700' : 'text-rose-700')}">
+              ${s.contractRate}%
+            </td>
+            <td class="py-3 px-3 text-center font-mono">${s.mainCategoryRate}%</td>
+            <td class="py-3 px-3 text-center font-mono font-semibold">${s.qualityScore} 分</td>
+            <td class="py-3 px-3 text-center font-mono">${s.cooperationScore} / ${s.potentialScore}</td>
+            <td class="py-3 px-3 text-center">
+              <span class="inline-block px-2 py-0.5 rounded font-bold border text-xs ${gradeColor}">${gradeLabel}</span>
+            </td>
+            <td class="py-3 px-3 text-center">
+              <span class="inline-block px-2 py-0.5 rounded font-medium text-[11px] border ${riskColor}">${riskLabel}</span>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <button onclick="simulateSupplierScore('${s.id}')" class="px-2.5 py-1 text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded border border-emerald-200 font-medium">試算模擬</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function simulateSupplierScore(supId) {
+      const sup = suppliers.find(s => s.id === supId);
+      const newRate = prompt(`請輸入 ${sup.name} 總契約達成率 (%)：\n【評級標準】：A 級 ≧ 65%（優良合作）、B 級 50%~64%（穩定合作）、C 級 < 50%（改善觀察）`, sup.contractRate);
+      if (newRate !== null) {
+        const rateNum = Number(newRate);
+        sup.contractRate = rateNum;
+        sup.grade = rateNum >= 65 ? 'A' : (rateNum >= 50 ? 'B' : 'C');
+        renderSupplierTable();
+        alert(`已完成即時評估試算！\n總契約達成率：${rateNum}%\n換算最終等級：${sup.grade === 'A' ? 'A 級（優良合作）' : (sup.grade === 'B' ? 'B 級（穩定合作）' : 'C 級（改善觀察）')}`);
+      }
+    }
+
+    // 模組 3: Render 5D Organic Integrity Module
+    function renderRiskModule() {
+      const listContainer = document.getElementById('risk-supplier-list');
+      listContainer.innerHTML = suppliers.map(s => {
+        const riskLabel = s.riskLevel === 'low' ? '低風險' : (s.riskLevel === 'medium' ? '中風險' : '高風險');
+        const riskBadge = s.riskLevel === 'low' ? 'bg-emerald-100 text-emerald-800' : (s.riskLevel === 'medium' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800');
+        return `
+          <div onclick="selectRiskSupplier('${s.id}')" class="p-3.5 rounded-xl border cursor-pointer transition-all ${s.id === currentRiskSupplier.id ? 'bg-emerald-50/60 border-emerald-500 shadow-xs' : 'bg-white border-slate-200 hover:border-slate-300'}">
+            <div class="flex justify-between items-center text-xs mb-1">
+              <span class="font-bold text-slate-900">${s.name}</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold ${riskBadge}">${riskLabel}</span>
+            </div>
+            <div class="text-[11px] text-slate-500">五維度綜合得分：<span class="font-mono font-bold text-slate-800">${s.risk5D.total}</span> 分</div>
+          </div>
+        `;
+      }).join('');
+
+      const detail = document.getElementById('risk-detail-console');
+      const r = currentRiskSupplier.risk5D;
+      const strategyText = currentRiskSupplier.riskLevel === 'low' ? '低風險（例行追蹤）' : (currentRiskSupplier.riskLevel === 'medium' ? '中風險（加強查核）' : '高風險（專案查核與供應管制）');
+      const strategyBadge = currentRiskSupplier.riskLevel === 'low' ? 'bg-emerald-100 text-emerald-800' : (currentRiskSupplier.riskLevel === 'medium' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800');
+
+      detail.innerHTML = `
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">${currentRiskSupplier.name} - 五維度有機完整性評估矩陣</h3>
+            <div class="text-xs text-slate-500">代碼：${currentRiskSupplier.code} · ${currentRiskSupplier.region}</div>
+          </div>
+          <span class="text-xs font-bold px-3 py-1.5 rounded ${strategyBadge}">
+            ${strategyText}
+          </span>
+        </div>
+
+        <div class="space-y-3.5 text-xs mb-5">
+          <!-- 1. 人（有機概念） -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+            <div class="flex justify-between font-bold text-slate-800 mb-1">
+              <span>人（有機概念） - 經營者與田間作業人員法規與零容忍意識</span>
+              <span class="font-mono text-emerald-700 font-bold">${r.human} 分</span>
+            </div>
+            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-emerald-600 h-full rounded-full" style="width: ${r.human}%"></div></div>
+          </div>
+
+          <!-- 2. 事（年度矯正預防） -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+            <div class="flex justify-between font-bold text-slate-800 mb-1">
+              <span>事（年度矯正預防） - 歷次殘留抽檢與不合格品 CAPA 改善</span>
+              <span class="font-mono text-blue-700 font-bold">${r.matter} 分</span>
+            </div>
+            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-blue-600 h-full rounded-full" style="width: ${r.matter}%"></div></div>
+          </div>
+
+          <!-- 3. 時（田區高風險時間） -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+            <div class="flex justify-between font-bold text-slate-800 mb-1">
+              <span>時（田區高風險時間） - 鄰田用藥季、梅雨連續降雨期管理</span>
+              <span class="font-mono text-amber-700 font-bold">${r.time} 分</span>
+            </div>
+            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-amber-600 h-full rounded-full" style="width: ${r.time}%"></div></div>
+          </div>
+
+          <!-- 4. 地（各田區風險） -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+            <div class="flex justify-between font-bold text-slate-800 mb-1">
+              <span>地（各田區風險） - 鄰田緩衝帶隔離、空飄受害機率與獨立取水</span>
+              <span class="font-mono text-indigo-700 font-bold">${r.place} 分</span>
+            </div>
+            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-indigo-600 h-full rounded-full" style="width: ${r.place}%"></div></div>
+          </div>
+
+          <!-- 5. 物（資材風險） -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+            <div class="flex justify-between font-bold text-slate-800 mb-1">
+              <span>物（資材風險） - 外購堆肥審查、資材清冊與農機共用清洗</span>
+              <span class="font-mono text-purple-700 font-bold">${r.material} 分</span>
+            </div>
+            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"><div class="bg-purple-600 h-full rounded-full" style="width: ${r.material}%"></div></div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700">
+          <strong>現場查核與管制處置策略：</strong> ${currentRiskSupplier.notes}
+        </div>
+      `;
+    }
+
+    function selectRiskSupplier(id) {
+      currentRiskSupplier = suppliers.find(s => s.id === id);
+      renderRiskModule();
+    }
+
+    // 模組 4: 行政表單整合與暫存／結案流程
+    let activeFormTab = 'draft';
+    function setFormTab(tab) {
+      activeFormTab = tab;
+      ['draft', 'closed', 'all'].forEach(t => {
+        const el = document.getElementById('ftab-' + t);
+        if (el) el.className = (t === tab) ? 'px-3.5 py-1.5 font-bold bg-white rounded text-slate-900 shadow-xs' : 'px-3.5 py-1.5 font-medium text-slate-600 hover:text-slate-900';
+      });
+      renderFormsTable();
+    }
+
+    function renderFormsTable() {
+      const tbody = document.getElementById('forms-tbody');
+      const filtered = forms.filter(f => {
+        if (activeFormTab === 'draft') return f.status === 'draft';
+        if (activeFormTab === 'closed') return f.status === 'closed';
+        return true;
+      });
+
+      tbody.innerHTML = filtered.map(f => `
+        <tr class="hover:bg-slate-50 transition-colors">
+          <td class="py-3 px-4">
+            <div class="font-mono font-bold text-slate-900">${f.id}</div>
+            <div class="text-[11px] text-emerald-700 font-semibold">${f.type}</div>
+          </td>
+          <td class="py-3 px-3 font-semibold text-slate-800">${f.supplier}</td>
+          <td class="py-3 px-4 max-w-sm">
+            <div class="font-medium text-slate-900">${f.title}</div>
+            <div class="text-[11px] text-slate-500 mt-0.5 line-clamp-1">${f.summary}</div>
+          </td>
+          <td class="py-3 px-3 text-center">
+            ${f.status === 'draft' ? '<span class="px-2 py-0.5 rounded font-medium text-[11px] bg-amber-50 text-amber-800 border border-amber-200">暫存區</span>' : '<span class="px-2 py-0.5 rounded font-medium text-[11px] bg-emerald-50 text-emerald-800 border border-emerald-200">結案區</span>'}
+          </td>
+          <td class="py-3 px-3 text-center font-mono text-slate-400 text-[11px]">${f.time}</td>
+          <td class="py-3 px-4 text-right">
+            ${f.status === 'draft' ? `
+              <button onclick="closeSingleCase('${f.id}')" class="px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white rounded font-bold shadow-xs">
+                按下結案
+              </button>
+            ` : `
+              <span class="text-slate-400 font-mono text-[11px]">已結案封存</span>
+            `}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // 按下結案按鈕：按下後將資料移至「結案區」，並自動清除暫存檔
+    function closeSingleCase(formId) {
+      const form = forms.find(f => f.id === formId);
+      if (form) {
+        form.status = 'closed';
+        form.time = new Date().toLocaleTimeString();
+        renderFormsTable();
+        alert(`表單【${form.id} - ${form.title}】已成功結案！\n已移至「結案區」封存，並自動自暫存檔清除。`);
+      }
+    }
+
+    function openFormModal() {
+      const type = prompt("請選擇欲開立的表單種類 (輸入 1~4)：\n1. 供應商年度評估表\n2. 風險評估表\n3. 品項進價異動表\n4. 新增品項異動表", "1");
+      let typeName = "供應商年度評估表";
+      if (type === "2") typeName = "風險評估表";
+      if (type === "3") typeName = "品項進價異動表";
+      if (type === "4") typeName = "新增品項異動表";
+
+      const title = prompt(`請輸入【${typeName}】主旨：`, `慈耕楊文正 ${typeName} 提報`);
+      if (title) {
+        forms.unshift({
+          id: 'FORM-00' + (forms.length + 1),
+          type: typeName,
+          supplier: '慈耕楊文正',
+          title: title,
+          status: 'draft',
+          time: new Date().toLocaleTimeString(),
+          summary: '專員於現地填報，系統已自動儲存至「暫存區」。'
+        });
+        setFormTab('draft');
+        alert(`表單已自動儲存至「暫存區」（按修改日期由新到舊排序）！\n可隨時點擊「按下結案」完成簽核移轉。`);
+      }
+    }
+
+    // 模組 5: 行動訪查與日常供應回報
+    let currentFieldTab = 'planting';
+    function setFieldCardTab(tab) {
+      currentFieldTab = tab;
+      ['planting', 'yield', 'supplier_update', 'procurement_forecast', 'quality_capa'].forEach(t => {
+        const btn = document.getElementById('fc-' + t);
+        const card = document.getElementById('card-content-' + t);
+        if (t === tab) {
+          btn.className = 'p-2 rounded-lg border border-emerald-600 bg-emerald-50 text-emerald-800 font-bold text-center';
+          card.classList.remove('hidden');
+        } else {
+          btn.className = 'p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-center';
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    function updateNavSupplier(supName) {
+      const s = suppliers.find(item => item.name.includes(supName) || supName.includes(item.name)) || suppliers[0];
+      document.getElementById('nav-supplier-name').innerText = s.name;
+      document.getElementById('nav-contract-rate').innerText = s.contractRate + '%';
+      document.getElementById('nav-quality-score').innerText = s.qualityScore + ' 分';
+      document.getElementById('nav-coop-score').innerText = s.cooperationScore + ' 分';
+      document.getElementById('nav-risk-label').innerText = (s.riskLevel === 'low' ? '低風險' : (s.riskLevel === 'medium' ? '中風險' : '高風險')) + ` (${s.risk5D.total}分)`;
+    }
+
+    // 「所在地導航」虛擬按鈕：點選時自動帶出訪查前的歷史等級與品質評估資料
+    function simulateGPSNavigation() {
+      const sup = document.getElementById('field-supplier').value;
+      updateNavSupplier(sup);
+      alert(`📍 所在地導航已鎖定：【${sup}】\n已自動帶出該農場訪查前之歷史考核等級、交貨品質與契約達成率！`);
+    }
+
+    const fieldReports = [
+      { sup: '慈耕楊文正', type: '種植回報', crop: '有機彩色甜椒 (荷蘭橘豹)', text: '定植面積 0.8 公頃，幼苗展葉5葉1心生長健壯。', date: '2026-04-15' },
+      { sup: '南投農產合作社', type: '供應商資料更新', crop: '四季春生茶', text: '完成年度合約簽署，更新制茶廠聯絡窗口與排程。', date: '2026-04-14' },
+      { sup: '綠生有機農場', type: '採購預報', crop: '荷蘭水耕萵苣', text: '母親節生鮮專案預估收購 800 kg，稼動率充足。', date: '2026-04-13' },
+      { sup: '吳淑惠', type: '品異改善', crop: '美濃澄蜜香番茄', text: '加裝EVA防震內襯，現場抽驗裂果率已降至 3.2%。', date: '2026-04-11' }
+    ];
+
+    function renderFieldLog() {
+      const container = document.getElementById('field-log-container');
+      container.innerHTML = fieldReports.map(r => `
+        <div class="p-3 rounded-lg border border-slate-200 bg-slate-50 text-xs">
+          <div class="flex justify-between items-center text-[11px] mb-1">
+            <span class="font-bold text-slate-800">${r.sup} · ${r.crop}</span>
+            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-medium rounded">${r.type}</span>
+          </div>
+          <p class="text-slate-600 mt-1">${r.text}</p>
+          <div class="text-slate-400 text-[10px] mt-1 font-mono">${r.date} · 專員：林志明</div>
+        </div>
+      `).join('');
+    }
+
+    function handleFieldSubmit(e) {
+      e.preventDefault();
+      const sup = document.getElementById('field-supplier').value;
+      const crop = document.getElementById('field-crop').value;
+      const notes = document.getElementById('field-notes').value || '現場巡查正常，各項數據合格。';
+      let typeLabel = "種植回報";
+      if (currentFieldTab === 'yield') typeLabel = "產出預報";
+      if (currentFieldTab === 'supplier_update') typeLabel = "供應商資料更新";
+      if (currentFieldTab === 'procurement_forecast') typeLabel = "採購預報";
+      if (currentFieldTab === 'quality_capa') typeLabel = "品異互動與改善";
+
+      fieldReports.unshift({
+        sup, type: typeLabel, crop, text: notes, date: new Date().toISOString().split('T')[0]
+      });
+      renderFieldLog();
+      alert(`已成功提交【${typeLabel}】紀錄！`);
+    }
+
+    window.onload = function() {
+      renderTasks();
+      renderPortalTasks();
+      renderSupplierTable();
+      renderRiskModule();
+      renderFormsTable();
+      renderFieldLog();
+      switchTab('portal');
+    }
+  </script>
+</body>
+</html>
