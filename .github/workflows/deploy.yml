@@ -29,8 +29,8 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        # 關鍵修正 1：改用 npm install，避免沒有 package-lock.json 或版本不符時 11 秒內閃退
-        run: npm install
+        # 關鍵修正：加入 --legacy-peer-deps 徹底避免 npm Arborist 檢查 peer dependencies 時報 edgesOut 錯誤
+        run: npm install --legacy-peer-deps
 
       - name: Build
         # 關鍵修正 2：加入 CI=false，防止 TypeScript 或 Lint 警告（Warnings）被誤判成 Fatal Error
